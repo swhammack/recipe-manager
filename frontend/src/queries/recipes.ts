@@ -12,3 +12,17 @@ export const recipeSearch = async (searchText: string) => {
   }
   return response.json();
 };
+
+export const saveRecipe = async (recipe: RecipeDto) => {
+  const response = await kyClient.put(`recipes/${recipe.id}`, { json: recipe });
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+};
+
+export const deleteRecipe = async (id: string) => {
+  const response = await kyClient.delete(`recipes/${id}`);
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+};

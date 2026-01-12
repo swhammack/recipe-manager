@@ -1,9 +1,9 @@
 export type RecipeDto = {
   id: string;
   restaurantId: string;
-  title: string;
+  name: string;
   instructions: string;
-  ingredients: string[];
+  ingredients: string;
   yieldAmount: number;
   yieldUnit: string;
 };

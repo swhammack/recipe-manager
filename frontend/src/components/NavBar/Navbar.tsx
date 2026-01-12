@@ -6,8 +6,13 @@ import { useState } from "react";
 import { recipeSearch } from "../../queries/recipes.ts";
 
 import classes from "./Navbar.module.css";
+import type { RecipeDto } from "../../queries/dtos.ts";
 
-export function Navbar() {
+interface NavbarProps {
+  handleRecipeSelect: (recipe: RecipeDto) => void;
+}
+
+export function Navbar({ handleRecipeSelect }: NavbarProps) {
   const [searchText, setSearchText] = useState("");
   const [debounced] = useDebouncedValue(searchText, 200);
 
@@ -25,7 +30,10 @@ export function Navbar() {
         onChange={(e) => setSearchText(e.currentTarget.value)}
         rightSection={recipeSearchQuery.isLoading ? <Loader size="xs" /> : null}
       ></TextInput>
-      <RecipeList recipes={recipeSearchQuery.data} />
+      <RecipeList
+        recipes={recipeSearchQuery.data}
+        handleRecipeSelect={handleRecipeSelect}
+      />
     </>
   );
 }

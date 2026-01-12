@@ -1,25 +1,28 @@
 import { Navbar } from "./Navbar";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, userEvent, screen, waitFor } from "../../test-utils";
 
 describe("Navbar", () => {
+  function setup() {
+    const mockHandleRecipeSelect = vi.fn();
+    return render(<Navbar handleRecipeSelect={mockHandleRecipeSelect} />);
+  }
+
   it("renders search input", () => {
-    render(<Navbar />);
+    setup();
     expect(screen.getByLabelText(/search recipes/i)).toBeInTheDocument();
   });
 
   it("updates search text when typing", async () => {
-    render(<Navbar />);
+    setup();
     const input = screen.getByLabelText(/search recipes/i);
     await userEvent.type(input, "Pasta");
     expect(input).toHaveValue("Pasta");
   });
 
   it("fetches and displays recipes from MSW", async () => {
-    render(<Navbar />);
+    setup();
 
-    // The recipes are defined in src/mocks/recipes.ts
-    // One of them is "Lemon Herb Quinoa Salad (Bulk)"
     await waitFor(
       () => {
         expect(

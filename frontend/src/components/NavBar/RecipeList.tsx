@@ -5,9 +5,10 @@ import classes from "./RecipeList.module.css";
 
 type RecipeListProps = {
   recipes?: RecipeDto[];
+  handleRecipeSelect: (recipe: RecipeDto) => void;
 };
 
-export function RecipeList({ recipes }: RecipeListProps) {
+export function RecipeList({ recipes, handleRecipeSelect }: RecipeListProps) {
   const hasRecipes = recipes && recipes.length > 0;
 
   return (
@@ -20,8 +21,9 @@ export function RecipeList({ recipes }: RecipeListProps) {
             shadow="sm"
             padding="sm"
             withBorder
+            onClick={() => handleRecipeSelect(recipe)}
           >
-            <Text size="md">{recipe.title}</Text>
+            <Text size="md">{recipe.name}</Text>
             <Text size="sm" c="dimmed">
               {recipe.yieldAmount} {recipe.yieldUnit}
             </Text>
