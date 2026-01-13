@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: recipe-manager-api
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipe-manager
+    username: postgres
+    password: postgres
+server:
+  servlet:
+    context-path: /api
