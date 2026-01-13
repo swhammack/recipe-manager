@@ -11,6 +11,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
+// To enable api mocking in development, uncomment the following lines:
+
 // async function enableMocking() {
 //   if (process.env.NODE_ENV !== "development") {
 //     return;
