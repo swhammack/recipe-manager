@@ -2,20 +2,55 @@ import { Button, Card, Group, Stack, TextInput, Textarea } from "@mantine/core";
 
 import type { RecipeDto } from "../../queries/dtos.ts";
 import { useForm } from "@mantine/form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { saveRecipe } from "../../queries/recipes.ts";
 
 type EditRecipeProps = {
   recipe: RecipeDto;
   onCancelClick: () => void;
+  handleRecipeSelect: (recipe: RecipeDto | undefined) => void;
 };
 
-export function EditRecipe({ recipe, onCancelClick }: EditRecipeProps) {
+export function EditRecipe({
+  recipe,
+  onCancelClick,
+  handleRecipeSelect,
+}: EditRecipeProps) {
+  const queryClient = useQueryClient();
+
   const saveMutation = useMutation({
     mutationFn: saveRecipe,
-    onSuccess: () => {
-      console.log("Recipe saved successfully");
-      onCancelClick();
+    onMutate: async (updatedRecipe, context) => {
+      await context.client.cancelQueries({ queryKey: ["recipes"] });
+
+      const previousRecipes = queryClient.getQueryData<RecipeDto[]>([
+        "recipes",
+      ]);
+
+      context.client.setQueryData<RecipeDto[]>(["recipes"], (oldData) => {
+        if (!oldData) return [recipe];
+        return oldData.map((recipe) =>
+          recipe.id === updatedRecipe.id ? updatedRecipe : recipe,
+        );
+      });
+
+      return { previousRecipes };
+    },
+    onSuccess: (data) => {
+      console.log("Recipe saved successfully:", data);
+    },
+    onError: (error, _variables, onMutateResult, context) => {
+      console.log("An error occurred during save: ", error.message);
+      if (onMutateResult?.previousRecipes) {
+        context.client.setQueryData<RecipeDto[]>(
+          ["recipes"],
+          onMutateResult.previousRecipes,
+        );
+      }
+    },
+    onSettled: async (data, _error, _variables, _onMutateResult, context) => {
+      await context.client.invalidateQueries({ queryKey: ["recipes"] });
+      handleRecipeSelect(data);
     },
   });
 
@@ -92,6 +127,8 @@ export function EditRecipe({ recipe, onCancelClick }: EditRecipeProps) {
             </Button>
             <Button onClick={onCancelClick}>Cancel</Button>
           </Group>
+          {saveMutation.isSuccess && <div>Recipe saved successfully</div>}
+          {saveMutation.isError && <div>An error occurred during save</div>}
         </form>
       </Stack>
     </Card>

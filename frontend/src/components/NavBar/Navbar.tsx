@@ -9,7 +9,7 @@ import classes from "./Navbar.module.css";
 import type { RecipeDto } from "../../queries/dtos.ts";
 
 interface NavbarProps {
-  handleRecipeSelect: (recipe: RecipeDto) => void;
+  handleRecipeSelect: (recipe: RecipeDto | undefined) => void;
 }
 
 export function Navbar({ handleRecipeSelect }: NavbarProps) {

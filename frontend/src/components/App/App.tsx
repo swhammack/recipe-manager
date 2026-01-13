@@ -9,7 +9,7 @@ import { Recipe } from "../Recipe/Recipe.tsx";
 function App() {
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeDto | undefined>();
 
-  function handleRecipeSelect(recipe: RecipeDto) {
+  function handleRecipeSelect(recipe: RecipeDto | undefined) {
     console.log("Selected recipe:", recipe);
     setSelectedRecipe(recipe);
   }
@@ -27,7 +27,11 @@ function App() {
         <Navbar handleRecipeSelect={handleRecipeSelect} />
       </AppShell.Navbar>
       <AppShell.Main>
-        <Recipe recipe={selectedRecipe} handleDelete={handleDelete} />
+        <Recipe
+          recipe={selectedRecipe}
+          handleRecipeSelect={handleRecipeSelect}
+          handleDelete={handleDelete}
+        />
       </AppShell.Main>
     </AppShell>
   );

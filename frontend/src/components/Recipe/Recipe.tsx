@@ -7,10 +7,15 @@ import { EditRecipe } from "./EditRecipe.tsx";
 
 type RecipeProps = {
   recipe?: RecipeDto;
+  handleRecipeSelect: (recipe: RecipeDto | undefined) => void;
   handleDelete: () => void;
 };
 
-export function Recipe({ recipe, handleDelete }: RecipeProps) {
+export function Recipe({
+  recipe,
+  handleRecipeSelect,
+  handleDelete,
+}: RecipeProps) {
   const [editing, setEditing] = useState(false);
 
   if (!recipe) {
@@ -25,7 +30,11 @@ export function Recipe({ recipe, handleDelete }: RecipeProps) {
 
   if (editing) {
     return (
-      <EditRecipe recipe={recipe} onCancelClick={() => setEditing(false)} />
+      <EditRecipe
+        recipe={recipe}
+        handleRecipeSelect={handleRecipeSelect}
+        onCancelClick={() => setEditing(false)}
+      />
     );
   }
 

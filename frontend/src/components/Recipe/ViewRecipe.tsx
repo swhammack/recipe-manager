@@ -2,7 +2,7 @@ import { Button, Card, Group, Stack, Title, Text } from "@mantine/core";
 
 import classes from "./ViewRecipe.module.css";
 import type { RecipeDto } from "../../queries/dtos.ts";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteRecipe } from "../../queries/recipes.ts";
 
 type ViewRecipeProps = {
@@ -16,11 +16,18 @@ export function ViewRecipe({
   onEditClick,
   handleDelete,
 }: ViewRecipeProps) {
+  const queryClient = useQueryClient();
+
   const deleteMutation = useMutation({
     mutationFn: deleteRecipe,
-    onSuccess: () => {
+    onSuccess: (_data, variables, _onMutateResult, context) => {
       console.log("Recipe deleted successfully");
+      queryClient.setQueryData<RecipeDto[]>(["recipes"], (oldData) => {
+        if (!oldData) return [];
+        return oldData.filter((recipe) => recipe.id !== variables);
+      });
       handleDelete();
+      context.client.invalidateQueries({ queryKey: ["recipes"] });
     },
   });
 

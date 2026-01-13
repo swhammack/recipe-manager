@@ -15,7 +15,13 @@ const mockRecipe: RecipeDto = {
 
 describe("EditRecipe", () => {
   it("renders form with initial values", () => {
-    render(<EditRecipe recipe={mockRecipe} onCancelClick={() => {}} />);
+    render(
+      <EditRecipe
+        recipe={mockRecipe}
+        onCancelClick={() => {}}
+        handleRecipeSelect={() => {}}
+      />,
+    );
 
     expect(screen.getByLabelText(/Name/)).toHaveValue(mockRecipe.name);
     expect(screen.getByLabelText(/Ingredients/)).toHaveValue(
@@ -33,7 +39,13 @@ describe("EditRecipe", () => {
   });
 
   it("shows validation errors for empty fields", async () => {
-    render(<EditRecipe recipe={mockRecipe} onCancelClick={() => {}} />);
+    render(
+      <EditRecipe
+        recipe={mockRecipe}
+        onCancelClick={() => {}}
+        handleRecipeSelect={() => {}}
+      />,
+    );
 
     const nameInput = screen.getByLabelText(/Name/);
     await userEvent.clear(nameInput);
@@ -45,7 +57,13 @@ describe("EditRecipe", () => {
 
   it("calls onCancelClick when Cancel button is clicked", async () => {
     const onCancelClick = vi.fn();
-    render(<EditRecipe recipe={mockRecipe} onCancelClick={onCancelClick} />);
+    render(
+      <EditRecipe
+        recipe={mockRecipe}
+        onCancelClick={onCancelClick}
+        handleRecipeSelect={() => {}}
+      />,
+    );
 
     await userEvent.click(screen.getByText("Cancel"));
     expect(onCancelClick).toHaveBeenCalled();
@@ -53,7 +71,14 @@ describe("EditRecipe", () => {
 
   it("submits the form successfully", async () => {
     const onCancelClick = vi.fn();
-    render(<EditRecipe recipe={mockRecipe} onCancelClick={onCancelClick} />);
+    const handleRecipeSelect = vi.fn();
+    render(
+      <EditRecipe
+        recipe={mockRecipe}
+        onCancelClick={onCancelClick}
+        handleRecipeSelect={handleRecipeSelect}
+      />,
+    );
 
     const nameInput = screen.getByLabelText(/Name/);
     await userEvent.clear(nameInput);
@@ -62,7 +87,8 @@ describe("EditRecipe", () => {
     await userEvent.click(screen.getByText("Save"));
 
     await waitFor(() => {
-      expect(onCancelClick).toHaveBeenCalled();
+      expect(handleRecipeSelect).toHaveBeenCalled();
+      expect(screen.getByText("Recipe saved successfully"));
     });
   });
 });

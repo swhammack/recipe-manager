@@ -18,6 +18,7 @@ export const saveRecipe = async (recipe: RecipeDto) => {
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
+  return response.json<RecipeDto>();
 };
 
 export const deleteRecipe = async (id: string) => {
